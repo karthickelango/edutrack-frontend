@@ -121,13 +121,13 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ students, courses, ac
           <div className="bg-white p-10 rounded-3xl border border-slate-100 shadow-sm">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-10">
               <div>
-                <h3 className="text-xl font-black text-slate-800">Progress by Discipline</h3>
+                <h3 className="text-xl font-black text-slate-800">Progress by Course</h3>
                 <p className="text-xs text-slate-400 font-medium mt-1">Class-wide performance aggregated by subject category.</p>
               </div>
-              <div className="flex items-center gap-3 bg-slate-50 p-2 rounded-xl border border-slate-100">
+              {/* <div className="flex items-center gap-3 bg-slate-50 p-2 rounded-xl border border-slate-100">
                 <div className="w-3 h-3 bg-indigo-500 rounded-full"></div>
                 <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Class Average %</span>
-              </div>
+              </div> */}
             </div>
             
             <div className="h-80">
