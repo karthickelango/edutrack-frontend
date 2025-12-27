@@ -32,8 +32,8 @@ const MentorMentorshipView: React.FC<MentorMentorshipViewProps> = ({ students, c
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in slide-in-from-bottom duration-500">
       <header>
-        <h1 className="text-3xl font-black text-slate-900">Mentorship Roster</h1>
-        <p className="text-slate-500 font-medium">Deep dive into individual student progress and logged activity.</p>
+        <h1 className="text-3xl font-black text-slate-900">Mentorship</h1>
+        {/* <p className="text-slate-500 font-medium">Deep dive into individual student progress and logged activity.</p> */}
       </header>
 
       <div className="bg-white rounded-3xl border border-slate-100 shadow-sm overflow-hidden">
@@ -84,7 +84,7 @@ const MentorMentorshipView: React.FC<MentorMentorshipViewProps> = ({ students, c
 
       {/* Student Details Slider - Reused from previous implementation */}
       {selectedStudent && (
-        <div className="fixed inset-0 z-[100] flex justify-end">
+        <div className="fixed inset-0 z-[100] flex justify-end" style={{margin: 0}}>
           <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onClick={() => setSelectedStudent(null)}></div>
           <div className="relative w-full max-w-2xl bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-500">
             <div className="p-8 border-b flex justify-between items-center bg-slate-50">

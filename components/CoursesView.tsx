@@ -149,7 +149,7 @@ const CoursesView: React.FC<CoursesViewProps> = ({ courses, currentUser, activit
       
       {/* Dynamic Detail Drawer */}
       {selectedCourse && (
-        <div className="fixed inset-0 z-[100] flex justify-end">
+        <div className="fixed inset-0 z-[100] flex justify-end" style={{margin: 0}}>
           <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-md animate-in fade-in duration-500" onClick={() => setSelectedCourse(null)}></div>
           <div className="relative w-full max-w-2xl bg-white h-screen shadow-2xl flex flex-col animate-in slide-in-from-right duration-700">
             {/* Drawer Header */}

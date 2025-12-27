@@ -198,7 +198,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ students, courses, ac
 
       {/* Student Details Drawer */}
       {selectedStudent && (
-        <div className="fixed inset-0 z-[100] flex justify-end">
+        <div className="fixed inset-0 z-[100] flex justify-end" style={{margin: 0}}>
           {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-slate-950/40 backdrop-blur-sm animate-in fade-in duration-300" 
