@@ -110,10 +110,10 @@ const MentorMentorshipView: React.FC<MentorMentorshipViewProps> = ({ students, c
                    <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Lessons</span>
                    <p className="text-3xl font-black text-white mt-1">{getStudentMetrics(selectedStudent.id).completed}</p>
                  </div>
-                 <div className="p-6 bg-slate-50 rounded-3xl">
+                 {/* <div className="p-6 bg-slate-50 rounded-3xl">
                     <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Learning Time</span>
                     <p className="text-2xl font-black text-slate-900 mt-1">{Math.floor(getStudentMetrics(selectedStudent.id).totalMins / 60)}h</p>
-                 </div>
+                 </div> */}
                </div>
                
                {/* Courses Section */}
