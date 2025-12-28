@@ -12,17 +12,17 @@ interface CoursesViewProps {
 const CoursesView: React.FC<CoursesViewProps> = ({ courses, currentUser, activities, students }) => {
   const [filter, setFilter] = useState('All');
   const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
-  
+
   // Track which students' progress are being "peeked" at
   const [peekProgress, setPeekProgress] = useState<string | null>(null);
 
   const categories = ['All', ...Array.from(new Set(courses.map(c => c.category)))];
 
-  const filteredCourses = filter === 'All' 
-    ? courses 
+  const filteredCourses = filter === 'All'
+    ? courses
     : courses.filter(c => c.category === filter);
 
-  const displayCourses = currentUser.role === UserRole.STUDENT 
+  const displayCourses = currentUser.role === UserRole.STUDENT
     ? filteredCourses.filter(c => c.studentId === currentUser.id)
     : filteredCourses;
 
@@ -35,24 +35,26 @@ const CoursesView: React.FC<CoursesViewProps> = ({ courses, currentUser, activit
             Academic Catalog
           </div>
           <h1 className="text-4xl font-black text-slate-900 tracking-tight lg:text-5xl">Curriculum Explorer</h1>
-          <p className="text-slate-500 font-medium max-w-2xl text-lg">Manage and explore subject-specific learning tracks across your entire cohort.</p>
         </div>
-        
-        <nav className="flex p-1.5 bg-slate-100 rounded-2xl shadow-inner w-full lg:w-auto overflow-x-auto no-scrollbar">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setFilter(cat)}
-              className={`px-6 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all whitespace-nowrap ${
-                filter === cat 
-                  ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200' 
-                  : 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </nav>
+
+        {
+          currentUser.role === UserRole.STUDENT ? '' :
+
+            <nav className="flex p-1.5 bg-slate-100 rounded-2xl shadow-inner w-full lg:w-auto overflow-x-auto no-scrollbar">
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setFilter(cat)}
+                  className={`px-6 py-2.5 text-xs font-black uppercase tracking-widest rounded-xl transition-all whitespace-nowrap ${filter === cat
+                    ? 'bg-white text-indigo-600 shadow-sm ring-1 ring-slate-200'
+                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-200/50'
+                    }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </nav>
+        }
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-10">
@@ -61,7 +63,7 @@ const CoursesView: React.FC<CoursesViewProps> = ({ courses, currentUser, activit
           const student = students.find(s => s.id === course.studentId);
           const isPeeking = peekProgress === course.id;
           const isMentor = currentUser.role === UserRole.MENTOR;
-          
+
           return (
             <div key={course.id} className="group relative bg-white rounded-[3rem] border border-slate-100 p-1 shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col">
               <div className="p-8 flex flex-col h-full">
@@ -73,13 +75,13 @@ const CoursesView: React.FC<CoursesViewProps> = ({ courses, currentUser, activit
                     </div>
                   </div>
                   <div className="text-right flex flex-col items-end gap-2">
-                     <span className="px-3 py-1 bg-slate-50 border border-slate-100 rounded-full text-[9px] font-black text-slate-400 uppercase tracking-widest">{course.category}</span>
+                    <span className="px-3 py-1 bg-slate-50 border border-slate-100 rounded-full text-[9px] font-black text-slate-400 uppercase tracking-widest">{course.category}</span>
                   </div>
                 </div>
 
                 <h3 className="text-2xl font-black text-slate-900 mb-3 leading-tight group-hover:text-indigo-600 transition-colors">{course.title}</h3>
                 <p className="text-slate-400 font-medium text-sm leading-relaxed mb-10 line-clamp-2">Deep-dive into foundational principles and advanced methodologies of {course.title.toLowerCase()}.</p>
-                
+
                 <div className="mt-auto space-y-6">
                   {/* Progress Visualization */}
                   <div className={`overflow-hidden transition-all duration-500 ease-in-out ${(!isMentor || isPeeking) ? 'max-h-40 opacity-100 mb-6' : 'max-h-0 opacity-0'}`}>
@@ -89,19 +91,19 @@ const CoursesView: React.FC<CoursesViewProps> = ({ courses, currentUser, activit
                         <span className="text-3xl font-black text-green-400 tracking-tighter">{progress}%</span>
                       </div>
                       <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
-                        <div 
-                          className="h-full bg-green-500 rounded-full transition-all duration-1000 shadow-[0_0_12px_rgba(79,70,229,0.3)]" 
-                          style={{width: `${progress}%`}}
+                        <div
+                          className="h-full bg-green-500 rounded-full transition-all duration-1000 shadow-[0_0_12px_rgba(79,70,229,0.3)]"
+                          style={{ width: `${progress}%` }}
                         ></div>
                       </div>
                       <div className="flex justify-between mt-4">
                         <div className="flex flex-col">
-                           <span className="text-[9px] font-black text-slate-300 uppercase">Lessons</span>
-                           <span className="text-xs font-bold text-slate-700">{course.completedLessons}/{course.totalLessons}</span>
+                          <span className="text-[9px] font-black text-slate-300 uppercase">Lessons</span>
+                          <span className="text-xs font-bold text-slate-700">{course.completedLessons}/{course.totalLessons}</span>
                         </div>
                         <div className="flex flex-col text-right">
-                           <span className="text-[9px] font-black text-slate-300 uppercase">Activity</span>
-                           <span className="text-xs font-bold text-slate-700">{Math.floor(course.timeSpent/60)}h Focused</span>
+                          <span className="text-[9px] font-black text-slate-300 uppercase">Activity</span>
+                          <span className="text-xs font-bold text-slate-700">{Math.floor(course.timeSpent / 60)}h Focused</span>
                         </div>
                       </div>
                     </div>
@@ -109,13 +111,12 @@ const CoursesView: React.FC<CoursesViewProps> = ({ courses, currentUser, activit
 
                   {/* Student Spotlight Card Action */}
                   {isMentor && student && (
-                    <button 
+                    <button
                       onClick={() => setPeekProgress(isPeeking ? null : course.id)}
-                      className={`w-full group/btn relative flex items-center gap-4 p-4 rounded-[2rem] border transition-all duration-300 ${
-                        isPeeking 
-                          ? 'bg-slate-900 border-slate-900 text-white shadow-xl -translate-y-1' 
-                          : 'bg-white border-slate-100 text-slate-900 hover:border-indigo-200 hover:shadow-lg'
-                      }`}
+                      className={`w-full group/btn relative flex items-center gap-4 p-4 rounded-[2rem] border transition-all duration-300 ${isPeeking
+                        ? 'bg-slate-900 border-slate-900 text-white shadow-xl -translate-y-1'
+                        : 'bg-white border-slate-100 text-slate-900 hover:border-indigo-200 hover:shadow-lg'
+                        }`}
                     >
                       <div className="relative">
                         <img src={student.avatar} className="w-12 h-12 rounded-2xl object-cover border-2 border-white shadow-md" alt={student.name} />
@@ -134,7 +135,7 @@ const CoursesView: React.FC<CoursesViewProps> = ({ courses, currentUser, activit
                   )}
                 </div>
 
-                <button 
+                <button
                   onClick={() => setSelectedCourse(course)}
                   className="w-full mt-6 py-5 bg-indigo-50 text-indigo-700 hover:bg-slate-900 hover:text-white rounded-[1.8rem] font-black text-xs uppercase tracking-[0.15em] transition-all active:scale-95 flex items-center justify-center gap-3"
                 >
@@ -146,10 +147,10 @@ const CoursesView: React.FC<CoursesViewProps> = ({ courses, currentUser, activit
           );
         })}
       </div>
-      
+
       {/* Dynamic Detail Drawer */}
       {selectedCourse && (
-        <div className="fixed inset-0 z-[100] flex justify-end" style={{margin: 0}}>
+        <div className="fixed inset-0 z-[100] flex justify-end" style={{ margin: 0 }}>
           <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-md animate-in fade-in duration-500" onClick={() => setSelectedCourse(null)}></div>
           <div className="relative w-full max-w-2xl bg-white h-screen shadow-2xl flex flex-col animate-in slide-in-from-right duration-700">
             {/* Drawer Header */}
@@ -158,8 +159,8 @@ const CoursesView: React.FC<CoursesViewProps> = ({ courses, currentUser, activit
                 <span className="inline-block px-3 py-1 bg-white/10 rounded-full text-[9px] font-black uppercase tracking-[0.2em] text-indigo-300">Syllabus Overview</span>
                 <h2 className="text-4xl font-black tracking-tight leading-none">{selectedCourse.title}</h2>
               </div>
-              <button 
-                onClick={() => setSelectedCourse(null)} 
+              <button
+                onClick={() => setSelectedCourse(null)}
                 className="absolute top-6 right-6 p-4 bg-white/10 hover:bg-white/20 rounded-3xl transition-all hover:rotate-90"
               >
                 <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M6 18L18 6M6 6l12 12"></path></svg>
@@ -168,10 +169,10 @@ const CoursesView: React.FC<CoursesViewProps> = ({ courses, currentUser, activit
 
             <div className="flex-1 overflow-y-auto p-10 space-y-12 pb-32">
               <div className="bg-slate-50 p-8 rounded-[2.5rem] border border-slate-100 flex flex-col items-center text-center">
-                 <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Completion Status</span>
-                 <p className="text-4xl font-black text-indigo-600 tracking-tighter">
+                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Completion Status</span>
+                <p className="text-4xl font-black text-indigo-600 tracking-tighter">
                   {Math.round((selectedCourse.completedLessons / selectedCourse.totalLessons) * 100)}%
-                 </p>
+                </p>
               </div>
 
               <section className="space-y-6">

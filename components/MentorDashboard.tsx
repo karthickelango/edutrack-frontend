@@ -11,7 +11,6 @@ interface MentorDashboardProps {
 
 const MentorDashboard: React.FC<MentorDashboardProps> = ({ students, courses, activities }) => {
   const [selectedStudent, setSelectedStudent] = useState<User | null>(null);
-
   // Accurate aggregation of data by category based on real classroom activity
   const courseData = Array.from(new Set(courses.map(c => c.category))).map(cat => {
     const categoryCourses = courses.filter(c => c.category === cat);
@@ -103,6 +102,44 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ students, courses, ac
     URL.revokeObjectURL(url);
   };
 
+
+  // Adaptive Recommendation Logic (Mentor)
+  const getStudentStatus = (studentId: string) => {
+  const studentCourses = courses.filter(c => c.studentId === studentId);
+  const studentActivities = activities.filter(a => a.studentId === studentId);
+
+  if (studentCourses.length === 0) return 'No Data';
+
+  const avgProgress =
+    studentCourses.reduce(
+      (sum, c) => sum + (c.completedLessons / c.totalLessons) * 100,
+      0
+    ) / studentCourses.length;
+
+  if (studentActivities.length === 0) {
+    return 'Needs Attention';
+  }
+
+  const lastActivity = new Date(
+    [...studentActivities]
+      .sort(
+        (a, b) =>
+          new Date(b.date).getTime() - new Date(a.date).getTime()
+      )[0].date
+  );
+
+  const daysInactive = Math.floor(
+    (Date.now() - lastActivity.getTime()) / (1000 * 60 * 60 * 24)
+  );
+
+  if (avgProgress >= 75 && daysInactive < 5) return 'Thriving';
+  if (avgProgress >= 40 && daysInactive < 7) return 'Needs Attention';
+
+  return 'At Risk';
+};
+
+
+
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-500 relative">
       <header className="flex justify-between items-end">
@@ -137,6 +174,45 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ students, courses, ac
               <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Total Subjects</span>
               <p className="text-4xl font-black text-slate-900 mt-2">{courseData.length}</p>
               <p className="text-[10px] text-slate-400 font-bold mt-2 uppercase tracking-tight">Active Curriculum</p>
+            </div>
+          </div>
+
+          {/* Adaptive Recommendations (Mentor) */}
+          <div className="p-6 rounded-3xl">
+            <p className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-4">
+              Adaptive Recommendations
+            </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {students.map(student => {
+                const status = getStudentStatus(student.id);
+
+                return (
+                  <div
+                    key={student.id}
+                    className={`flex items-center justify-between p-4 rounded-2xl border ${status === 'Thriving'
+                      ? 'bg-emerald-50 border-emerald-200'
+                      : status === 'Needs Attention'
+                        ? 'bg-amber-50 border-amber-200'
+                        : 'bg-rose-50 border-rose-200'
+                      }`}
+                  >
+                    <span className="text-sm font-bold text-slate-900 truncate">
+                      {student.name}
+                    </span>
+                    <span
+                      className={`text-[10px] font-black uppercase tracking-widest ${status === 'Thriving'
+                        ? 'text-emerald-600'
+                        : status === 'Needs Attention'
+                          ? 'text-amber-600'
+                          : 'text-rose-600'
+                        }`}
+                    >
+                      {status}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
@@ -226,6 +302,8 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ students, courses, ac
         </div>
       </div>
 
+
+
       {/* Student Details Drawer */}
       {selectedStudent && (
         <div className="fixed inset-0 z-[100] flex justify-end" style={{ margin: 0 }}>
@@ -267,10 +345,6 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ students, courses, ac
                 <div className="p-6 bg-slate-900 rounded-3xl">
                   <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Lessons</span>
                   <p className="text-3xl font-black text-white mt-1">{getStudentDetails(selectedStudent.id).completed}</p>
-                </div>
-                <div className="p-6 bg-slate-50 rounded-3xl border border-slate-100">
-                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-widest">Total Study</span>
-                  <p className="text-2xl font-black text-slate-900 mt-1">{Math.floor(getStudentDetails(selectedStudent.id).totalMins / 60)}h</p>
                 </div>
               </div>
 

@@ -28,7 +28,7 @@ export interface Course {
 export interface ActivityEvent {
   id: string;
   date: string;
-  minutesSpent: number;
+  minutes: number;
   lessonName: string;
   courseId: string;
   studentId: string;

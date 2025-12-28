@@ -40,17 +40,25 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ courses, activities
 
   // Prepare trend data (Daily Focus)
   const trendData = activities
+    .filter(a => a.studentId === loggedUser.id)
+    .sort(
+      (a, b) =>
+        new Date(a.date).getTime() - new Date(b.date).getTime()
+    )
     .slice(-7)
     .map(a => ({
-      date: new Date(a.date).toLocaleDateString(undefined, { weekday: 'short' }),
-      minutes: a.minutesSpent ?? a.minutesSpent, // 👈 fallback
-      label: a.lessonName
-    }))
-    .filter(d => d.minutes > 0);
+      date: new Date(a.date).toLocaleDateString(undefined, {
+        weekday: 'short'
+      }),
+      minutes: a.minutes,           // ✅ FIX
+      label: 'Study Session'
+    }));
+
+
 
   const exportActivityCSV = () => {
     const headers = ['Date', 'Lesson', 'Minutes Spent', 'Course ID'];
-    const rows = activities.map(a => [a.date, a.lessonName, a.minutesSpent, a.courseId]);
+    const rows = activities.map(a => [a.date, a.lessonName, a.minutes, a.courseId]);
     const csvContent = "data:text/csv;charset=utf-8,"
       + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
     const encodedUri = encodeURI(csvContent);
