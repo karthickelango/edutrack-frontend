@@ -1,32 +1,33 @@
 
 import React, { useState } from 'react';
-import { 
-  Tooltip, 
-  ResponsiveContainer, 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
+import {
+  Tooltip,
+  ResponsiveContainer,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
   PieChart,
   Pie,
   Cell
 } from 'recharts';
-import { Course, ActivityEvent } from '../types';
+import { Course, ActivityEvent, User } from '../types';
 
 interface StudentDashboardProps {
   courses: Course[];
   activities: ActivityEvent[];
   onLogActivity: (courseId: string, minutes: number, lessonName: string) => void;
+  loggedUser: User;
 }
 
-const StudentDashboard: React.FC<StudentDashboardProps> = ({ courses, activities, onLogActivity }) => {
+const StudentDashboard: React.FC<StudentDashboardProps> = ({ courses, activities, onLogActivity, loggedUser }) => {
   const [showLog, setShowLog] = useState(false);
 
   // Determine the current "Focus" course based on recent access, with a safety check for empty lists
-  const activeCourse = courses.length > 0 
-    ? courses.reduce((prev, current) => 
-        (new Date(prev.lastAccessed) > new Date(current.lastAccessed)) ? prev : current
-      )
+  const activeCourse = courses.length > 0
+    ? courses.reduce((prev, current) =>
+      (new Date(prev.lastAccessed) > new Date(current.lastAccessed)) ? prev : current
+    )
     : null;
 
   // Data for the Donut Chart (Completion Status)
@@ -39,14 +40,27 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ courses, activities
 
   // Prepare trend data (Daily Focus)
   const trendData = activities
-  .slice(-7)
-  .map(a => ({
-    date: new Date(a.date).toLocaleDateString(undefined, { weekday: 'short' }),
-    minutes: a.minutesSpent ?? a.minutesSpent, // 👈 fallback
-    label: a.lessonName
-  }))
-  .filter(d => d.minutes > 0);
+    .slice(-7)
+    .map(a => ({
+      date: new Date(a.date).toLocaleDateString(undefined, { weekday: 'short' }),
+      minutes: a.minutesSpent ?? a.minutesSpent, // 👈 fallback
+      label: a.lessonName
+    }))
+    .filter(d => d.minutes > 0);
 
+  const exportActivityCSV = () => {
+    const headers = ['Date', 'Lesson', 'Minutes Spent', 'Course ID'];
+    const rows = activities.map(a => [a.date, a.lessonName, a.minutesSpent, a.courseId]);
+    const csvContent = "data:text/csv;charset=utf-8,"
+      + [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `activity_log_${loggedUser.name.replace(' ', '_')}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-10 animate-in fade-in slide-in-from-bottom-4 duration-700">
@@ -54,28 +68,28 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ courses, activities
         <div>
           <h1 className="text-3xl font-black text-slate-900 tracking-tight">Personal Workspace</h1>
           <p className="text-slate-500 font-medium">
-            {courses.length > 0 
+            {courses.length > 0
               ? `You are enrolled in ${courses.length} learning ${courses.length === 1 ? 'track' : 'tracks'}.`
               : "Welcome! You haven't started any courses yet."}
           </p>
         </div>
-        {/* {courses.length > 0 && (
-          <button 
-            onClick={() => setShowLog(true)}
-            className="px-6 py-3.5 bg-slate-900 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-slate-200 hover:bg-indigo-600 transition-all active:scale-95 flex items-center gap-2"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M12 4v16m8-8H4"></path></svg>
-            Log Session
-          </button>
-        )} */}
+        <button
+          onClick={exportActivityCSV}
+          className="px-4 py-2 bg-slate-900 text-white rounded-xl
+               text-xs font-black uppercase tracking-widest
+               hover:bg-indigo-600 transition flex"
+        >
+          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a2 2 0 002 2h12a2 2 0 002-2v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+          Export Logs
+        </button>
       </header>
 
       {activeCourse ? (
         <section className="relative bg-white rounded-[3rem] border border-slate-100 shadow-sm overflow-hidden group">
           <div className="absolute top-0 right-0 p-12 opacity-[0.03] pointer-events-none text-indigo-600">
-            <svg className="w-64 h-64" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+            <svg className="w-64 h-64" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" /></svg>
           </div>
-          
+
           <div className="p-10 flex flex-col lg:flex-row items-center gap-12">
             <div className="relative w-64 h-64 flex-shrink-0">
               <ResponsiveContainer width="100%" height="100%">
@@ -114,7 +128,7 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ courses, activities
                 <h2 className="text-4xl font-black text-slate-900 tracking-tight leading-tight">{activeCourse.title}</h2>
                 <p className="text-slate-400 font-medium text-lg mt-2">Currently on module {activeCourse.completedLessons + 1} of {activeCourse.totalLessons}.</p>
               </div>
-              
+
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6 pt-4">
                 <div className="bg-slate-50 p-5 rounded-2xl border border-slate-100">
                   <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Time Logged</p>
@@ -161,33 +175,33 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ courses, activities
                   <AreaChart data={trendData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                     <defs>
                       <linearGradient id="colorMins" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.15}/>
-                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#6366f1" stopOpacity={0.15} />
+                        <stop offset="95%" stopColor="#6366f1" stopOpacity={0} />
                       </linearGradient>
                     </defs>
-                    <XAxis 
-                      dataKey="date" 
-                      axisLine={false} 
-                      tickLine={false} 
-                      tick={{fill: '#94a3b8', fontSize: 10, fontWeight: 700}}
+                    <XAxis
+                      dataKey="date"
+                      axisLine={false}
+                      tickLine={false}
+                      tick={{ fill: '#94a3b8', fontSize: 10, fontWeight: 700 }}
                     />
                     <YAxis hide />
-                    <Tooltip 
-                      contentStyle={{ 
-                        borderRadius: '16px', 
-                        border: 'none', 
+                    <Tooltip
+                      contentStyle={{
+                        borderRadius: '16px',
+                        border: 'none',
                         boxShadow: '0 20px 25px -5px rgb(0 0 0 / 0.1)',
                         fontSize: '12px',
                         fontWeight: 'bold'
-                      }} 
+                      }}
                     />
-                    <Area 
-                      type="monotone" 
-                      dataKey="minutes" 
-                      stroke="#6366f1" 
+                    <Area
+                      type="monotone"
+                      dataKey="minutes"
+                      stroke="#6366f1"
                       strokeWidth={4}
-                      fillOpacity={1} 
-                      fill="url(#colorMins)" 
+                      fillOpacity={1}
+                      fill="url(#colorMins)"
                       animationDuration={2000}
                     />
                   </AreaChart>
@@ -215,13 +229,13 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ courses, activities
                   </div>
                   <h4 className={`font-black text-sm mb-4 truncate ${course.id === activeCourse?.id ? 'text-slate-900' : 'text-slate-500 group-hover:text-slate-900'}`}>{course.title}</h4>
                   <div className="flex items-center gap-4">
-                    <div className="flex-1 h-1.5 bg-white rounded-full overflow-hidden">
-                      <div 
-                        className="h-full bg-slate-900 rounded-full transition-all duration-1000" 
-                        style={{width: `${(course.completedLessons/course.totalLessons)*100}%`}}
+                    <div className="flex-1 h-1.5 bg-gray-300 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-green-500 rounded-full transition-all duration-1000"
+                        style={{ width: `${(course.completedLessons / course.totalLessons) * 100}%` }}
                       ></div>
                     </div>
-                    <span className="text-[10px] font-black text-slate-900">{Math.round((course.completedLessons/course.totalLessons)*100)}%</span>
+                    <span className="text-[10px] font-black text-slate-900">{Math.round((course.completedLessons / course.totalLessons) * 100)}%</span>
                   </div>
                 </div>
               ))}
@@ -263,8 +277,8 @@ const StudentDashboard: React.FC<StudentDashboardProps> = ({ courses, activities
                   <input name="mins" type="number" defaultValue={30} className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-slate-700" required />
                 </div>
                 <div>
-                   <label className="text-[10px] font-black text-slate-400 uppercase mb-2 block tracking-widest">Lesson Title</label>
-                   <input name="lesson" placeholder="e.g. Unit 4.1" className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-slate-700" required />
+                  <label className="text-[10px] font-black text-slate-400 uppercase mb-2 block tracking-widest">Lesson Title</label>
+                  <input name="lesson" placeholder="e.g. Unit 4.1" className="w-full p-4 bg-slate-50 border-none rounded-2xl focus:ring-2 focus:ring-indigo-500 outline-none font-bold text-slate-700" required />
                 </div>
               </div>
               <button className="w-full bg-slate-900 text-white py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-xl shadow-slate-200 hover:bg-indigo-600 transition-all active:scale-95">Save Activity</button>

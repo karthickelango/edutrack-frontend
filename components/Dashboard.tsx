@@ -60,6 +60,7 @@ const Dashboard: React.FC<DashboardProps> = ({
       courses={studentCourses} 
       activities={studentActivities}
       onLogActivity={onLogActivity}
+      loggedUser={currentUser}
     />
   );
 };

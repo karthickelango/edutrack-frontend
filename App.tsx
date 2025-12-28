@@ -4,6 +4,7 @@ import { User, Course, ActivityEvent, AppView } from './types';
 import { Api } from './services/api';
 import Layout from './components/Layout';
 import Dashboard from './components/Dashboard';
+import './globals.css' 
 
 const App: React.FC = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);

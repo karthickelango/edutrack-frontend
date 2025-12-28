@@ -86,11 +86,11 @@ const CoursesView: React.FC<CoursesViewProps> = ({ courses, currentUser, activit
                     <div className="bg-slate-50/50 p-6 rounded-[2rem] border border-slate-100">
                       <div className="flex justify-between items-end mb-3">
                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Mastery Level</span>
-                        <span className="text-3xl font-black text-indigo-600 tracking-tighter">{progress}%</span>
+                        <span className="text-3xl font-black text-green-400 tracking-tighter">{progress}%</span>
                       </div>
                       <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden">
                         <div 
-                          className="h-full bg-indigo-600 rounded-full transition-all duration-1000 shadow-[0_0_12px_rgba(79,70,229,0.3)]" 
+                          className="h-full bg-green-500 rounded-full transition-all duration-1000 shadow-[0_0_12px_rgba(79,70,229,0.3)]" 
                           style={{width: `${progress}%`}}
                         ></div>
                       </div>
@@ -153,8 +153,8 @@ const CoursesView: React.FC<CoursesViewProps> = ({ courses, currentUser, activit
           <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-md animate-in fade-in duration-500" onClick={() => setSelectedCourse(null)}></div>
           <div className="relative w-full max-w-2xl bg-white h-screen shadow-2xl flex flex-col animate-in slide-in-from-right duration-700">
             {/* Drawer Header */}
-            <div className="relative pt-16 pb-12 px-10 bg-slate-900 text-white overflow-hidden">
-              <div className="absolute z-10 space-y-2">
+            <div className="relative pt-5 pb-5 px-10 bg-slate-900 text-white overflow-hidden">
+              <div className="z-10 space-y-2">
                 <span className="inline-block px-3 py-1 bg-white/10 rounded-full text-[9px] font-black uppercase tracking-[0.2em] text-indigo-300">Syllabus Overview</span>
                 <h2 className="text-4xl font-black tracking-tight leading-none">{selectedCourse.title}</h2>
               </div>
@@ -188,16 +188,6 @@ const CoursesView: React.FC<CoursesViewProps> = ({ courses, currentUser, activit
                   ))}
                 </div>
               </section>
-
-              <div className="sticky bottom-0 mt-10">
-                <div className="p-10 bg-slate-900 rounded-[3rem] text-white shadow-2xl relative overflow-hidden">
-                   <h4 className="text-2xl font-black mb-3 relative z-10 tracking-tight">Review Coursework</h4>
-                   <p className="text-slate-400 text-sm mb-10 font-medium relative z-10">Access localized materials and unit tests for this subject.</p>
-                   <button className="w-full bg-indigo-600 py-5 rounded-[2rem] font-black text-xs uppercase tracking-widest hover:bg-indigo-500 transition-all shadow-lg relative z-10">
-                     Open Study Portal
-                   </button>
-                </div>
-              </div>
             </div>
           </div>
         </div>

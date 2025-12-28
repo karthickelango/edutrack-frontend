@@ -85,7 +85,7 @@ const MentorMentorshipView: React.FC<MentorMentorshipViewProps> = ({ students, c
       {/* Student Details Slider - Reused from previous implementation */}
       {selectedStudent && (
         <div className="fixed inset-0 z-[100] flex justify-end" style={{margin: 0}}>
-          <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm" onClick={() => setSelectedStudent(null)}></div>
+          <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-sm animate-in fade-in duration-300" onClick={() => setSelectedStudent(null)}></div>
           <div className="relative w-full max-w-2xl bg-white h-full shadow-2xl flex flex-col animate-in slide-in-from-right duration-500">
             <div className="p-8 border-b flex justify-between items-center bg-slate-50">
               <div className="flex items-center gap-4">

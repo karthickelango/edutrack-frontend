@@ -8,3 +8,12 @@
     @apply bg-slate-50 text-slate-900 antialiased;
   }
 }
+
+
+/* Desktop and above */
+@media (min-width: 768px) {
+  .sidebar {
+    position: sticky;
+    top: 0;
+  }
+}
