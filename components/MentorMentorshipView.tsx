@@ -20,7 +20,7 @@ const MentorMentorshipView: React.FC<MentorMentorshipViewProps> = ({ students, c
   const getStudentMetrics = (studentId: string) => {
     const studentCourses = courses.filter(c => c.studentId === studentId);
     const studentActivities = activities.filter(a => a.studentId === studentId);
-    const totalMins = studentActivities.reduce((sum, a) => sum + a.minutesSpent, 0);
+    const totalMins = studentActivities.reduce((sum, a) => sum + a.minutes, 0);
     const completed = studentCourses.reduce((sum, c) => sum + c.completedLessons, 0);
     const avgCompletion = studentCourses.length 
       ? Math.round(studentCourses.reduce((s, c) => s + (c.completedLessons / c.totalLessons) * 100, 0) / studentCourses.length) 

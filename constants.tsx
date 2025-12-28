@@ -16,7 +16,7 @@ export const SEEDED_COURSES: Course[] = [
 ];
 
 export const SEEDED_ACTIVITIES: ActivityEvent[] = [
-  { id: 'a1', studentId: 'u1', date: '2024-05-21', minutesSpent: 45, lessonName: 'HOCs', courseId: 'c1' },
-  { id: 'a2', studentId: 'u3', date: '2024-05-21', minutesSpent: 120, lessonName: 'Trees', courseId: 'c3' },
-  { id: 'a3', studentId: 'u1', date: '2024-05-20', minutesSpent: 30, lessonName: 'Colors', courseId: 'c2' }
+  { id: 'a1', studentId: 'u1', date: '2024-05-21', minutes: 45, lessonName: 'HOCs', courseId: 'c1' },
+  { id: 'a2', studentId: 'u3', date: '2024-05-21', minutes: 120, lessonName: 'Trees', courseId: 'c3' },
+  { id: 'a3', studentId: 'u1', date: '2024-05-20', minutes: 30, lessonName: 'Colors', courseId: 'c2' }
 ];

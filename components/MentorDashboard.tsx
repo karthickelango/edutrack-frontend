@@ -39,7 +39,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ students, courses, ac
   const getStudentDetails = (studentId: string) => {
     const studentCourses = courses.filter(c => c.studentId === studentId);
     const studentActivities = activities.filter(a => a.studentId === studentId);
-    const totalMins = studentActivities.reduce((sum, a) => sum + a.minutesSpent, 0);
+    const totalMins = studentActivities.reduce((sum, a) => sum + a.minutes, 0);
     const completed = studentCourses.reduce((sum, c) => sum + c.completedLessons, 0);
     const avgCompletion = studentCourses.length
       ? Math.round(studentCourses.reduce((s, c) => s + (c.completedLessons / c.totalLessons) * 100, 0) / studentCourses.length)
@@ -178,7 +178,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ students, courses, ac
           </div>
 
           {/* Adaptive Recommendations (Mentor) */}
-          <div className="p-6 rounded-3xl">
+          <div className="bg-indigo-50 border border-indigo-100 p-6 rounded-3xl">
             <p className="text-[10px] font-black uppercase tracking-widest text-indigo-400 mb-4">
               Adaptive Recommendations
             </p>
@@ -346,6 +346,7 @@ const MentorDashboard: React.FC<MentorDashboardProps> = ({ students, courses, ac
                   <span className="text-[10px] font-black uppercase text-slate-500 tracking-widest">Lessons</span>
                   <p className="text-3xl font-black text-white mt-1">{getStudentDetails(selectedStudent.id).completed}</p>
                 </div>
+
               </div>
 
               {/* Enrolled Courses */}

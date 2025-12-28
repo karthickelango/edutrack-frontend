@@ -74,7 +74,7 @@ const App: React.FC = () => {
       await Api.logActivity({
         studentId: currentUser.id,
         courseId,
-        minutesSpent: minutes,
+        minutes: minutes,
         lessonName,
         date: new Date().toISOString().split('T')[0]
       });
